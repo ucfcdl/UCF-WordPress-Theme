@@ -230,6 +230,7 @@ function ucfwp_the_posts_pagination( $args=array() ) {
  *
  * @since 0.4.0
  * @author Jo Dickson
+ * @internal
  * @param string $template_part_slug The template part slug to fetch
  * @param string $template_part_name The template part name to fetch
  */
@@ -241,7 +242,7 @@ function _ucfwp_get_template_part( $template_part_slug, $template_part_name ) {
 	$images = ucfwp_get_header_images( $obj );
 
 	switch ( $template_part_slug ) {
-		case 'template-parts/header':
+		case ucfwp_get_template_part_slug( 'header' ):
 			switch ( $template_part_name ) {
 				case '':
 					$shim_retval = ucfwp_get_header_default_markup( $obj );
@@ -252,7 +253,7 @@ function _ucfwp_get_template_part( $template_part_slug, $template_part_name ) {
 				default:
 					break;
 			}
-		case 'template-parts/header_content':
+		case ucfwp_get_template_part_slug( 'header_content' ):
 			switch ( $template_part_name ) {
 				case 'title_subtitle':
 					$shim_retval = ucfwp_get_header_content_title_subtitle( $obj );

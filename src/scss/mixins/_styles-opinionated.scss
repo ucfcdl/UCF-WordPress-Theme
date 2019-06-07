@@ -2,6 +2,168 @@
 // Applies core overrides to child content styles for
 // improved out-of-the-box headings, image alignment, etc.
 //
+
+// Utility mixin that sets base margin-top and margin-bottom overrides
+@mixin styles-opinionated-my() {
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+
+  @include media-breakpoint-up(md) {
+    margin-bottom: 2rem;
+  }
+
+  * + & {
+    margin-top: 1.5rem;
+
+    @include media-breakpoint-up(md) {
+      margin-top: 2rem;
+    }
+  }
+}
+
+// All overrides to apply when the opinionated stylesheet is enabled
 @mixin styles-opinionated() {
-  // TODO
+  // Text, headings
+  * + h1,
+  * + h2,
+  * + h3,
+  * + h4,
+  * + h5,
+  * + h6,
+  * + .h1,
+  * + .h2,
+  * + .h3,
+  * + .h4,
+  * + .h5,
+  * + .h6 {
+    margin-top: 1em;
+  }
+
+  // Images, figures
+  // sass-lint:disable no-qualifying-elements
+  .figure,
+  img[class*='wp-image-']:not(.figure-img) {
+    @include styles-opinionated-my();
+
+    &.float-left,
+    &.float-right {
+      @include media-breakpoint-only(xs) {
+        display: block;
+        float: none !important; // sass-lint:disable-line no-important
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      @include media-breakpoint-up(sm) {
+        margin-top: .5rem;
+      }
+
+      @include media-breakpoint-between(sm, md) {
+        max-width: 40% !important; // sass-lint:disable-line no-important
+      }
+
+      * + & {
+        margin-top: 1.5rem;
+
+        @include media-breakpoint-up(sm) {
+          margin-bottom: 1.25rem;
+          margin-top: .75rem;
+        }
+      }
+
+      br + & {
+        @include media-breakpoint-up(sm) {
+          margin-top: 1.5rem;
+        }
+      }
+    }
+
+    &.float-left {
+      @include media-breakpoint-up(sm) {
+        margin-right: $grid-gutter-width-base;
+      }
+
+      @include media-breakpoint-up(md) {
+        margin-right: $grid-gutter-width-base * 1.5;
+      }
+    }
+
+    &.float-right {
+      @include media-breakpoint-up(sm) {
+        margin-left: $grid-gutter-width-base;
+      }
+
+      @include media-breakpoint-up(md) {
+        margin-left: $grid-gutter-width-base * 1.5;
+      }
+    }
+  }
+
+  .figure-img {
+    width: 100%;
+  }
+
+  .figure-caption,
+  .wp-caption-dd {
+    font-family: $font-family-sans-serif;
+    margin-top: .25rem;
+  }
+
+  .wp-caption-dd {
+    color: $figure-caption-color;
+    font-size: $figure-caption-font-size;
+  }
+
+
+  // Editor-generated figures with captions
+  .wp-caption {
+    @include styles-opinionated-my();
+    display: flex;
+    flex-direction: column;
+
+    &.alignleft {
+      @include media-breakpoint-down(xs) {
+        float: none;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      @include media-breakpoint-up(sm) {
+        margin-right: $grid-gutter-width-base;
+      }
+
+      @include media-breakpoint-up(md) {
+        margin-right: $grid-gutter-width-base * 1.5;
+      }
+    }
+
+    &.alignright {
+      @include media-breakpoint-down(xs) {
+        float: none;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      @include media-breakpoint-up(sm) {
+        margin-left: $grid-gutter-width-base;
+      }
+
+      @include media-breakpoint-up(md) {
+        margin-left: $grid-gutter-width-base * 1.5;
+      }
+    }
+
+    img[class*='wp-image-']:not(.figure-img) {
+      max-width: 100% !important; // sass-lint:disable-line no-important
+      width: 100%;
+    }
+  }
+  // sass-lint:enable no-qualifying-elements
+
+
+  // Embeds
+  .embed {
+    @include styles-opinionated-my();
+  }
+
 }

@@ -8,8 +8,9 @@
 // Third-party assets
 //
 
-// Athena Framework
-@import './ucf-athena-framework/src/scss/framework';
+// Athena Framework variables, mixins
+@import './ucf-athena-framework/src/scss/variables';
+@import './ucf-athena-framework/src/scss/mixins';
 
 // Font Awesome
 @import './font-awesome/scss/font-awesome';
@@ -22,12 +23,3 @@
 
 @import 'utils';
 @import 'typography';
-
-@import 'layout';
-@import 'header';
-@import 'footer';
-
-@import 'components';
-@import 'pages';
-
-@import 'content';

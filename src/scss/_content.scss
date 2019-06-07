@@ -1,0 +1,11 @@
+//
+// Styles related to post/page content that otherwise don't
+// belong in header/footer or template-specific Sass files
+//
+
+// Opinionated style overrides - general
+.ucfwp-styles-opinionated {
+  .post-list-item {
+    @include styles-opinionated();
+  }
+}

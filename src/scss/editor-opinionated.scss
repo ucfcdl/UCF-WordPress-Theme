@@ -1,0 +1,21 @@
+//
+// Theme variables and variable overrides
+//
+@import 'variables';
+
+
+//
+// Third-party assets
+//
+
+// Athena Framework variables, mixins
+@import './ucf-athena-framework/src/scss/variables';
+@import './ucf-athena-framework/src/scss/mixins';
+
+
+//
+// Project-specific editor styles and overrides
+//
+@import 'mixins';
+
+@include styles-opinionated();

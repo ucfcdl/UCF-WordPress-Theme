@@ -159,8 +159,18 @@ gulp.task('scss-build-theme', () => {
   return buildCSS(`${config.src.scssPath}/style.scss`);
 });
 
+// Compile global editor stylesheet
+gulp.task('scss-build-editor', () => {
+  return buildCSS(`${config.src.scssPath}/editor.scss`);
+});
+
+// Compile opinionated editor stylesheet
+gulp.task('scss-build-editor-opinionated', () => {
+  return buildCSS(`${config.src.scssPath}/editor-opinionated.scss`);
+});
+
 // All theme css-related tasks
-gulp.task('css', gulp.series('scss-lint-theme', 'scss-build-theme'));
+gulp.task('css', gulp.series('scss-lint-theme', 'scss-build-theme', 'scss-build-editor', 'scss-build-editor-opinionated'));
 
 
 //

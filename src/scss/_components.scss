@@ -1,11 +1,3 @@
-@import 'utils';
-
-@import 'layout';
-@import 'typography';
-@import 'header';
-@import 'footer';
-
-// Components
 @import 'components/widgets';
 @import 'components/pagination';
 
@@ -21,6 +13,3 @@
 @import 'components/post-list';
 
 @import 'components/fact-icons';
-
-// Pages
-@import 'pages/404';

@@ -52,6 +52,46 @@ add_action( 'wp_enqueue_scripts', 'ucfwp_enqueue_jquery', 1 );
 
 
 /**
+ * Enqueue admin styles and scripts
+ *
+ * @since 0.6.0
+ * @author Jo Dickson
+ */
+function ucfwp_enqueue_admin_assets() {
+	// get_current_screen() returns null on this hook,
+	// so sniff the request URI instead when is_admin() is true
+	if ( is_admin() ) {
+
+		// If debug mode is enabled, force editor stylesheets to
+		// reload on every page refresh.  Caching of these stylesheets
+		// is very aggressive
+		$cache_bust = '';
+		if ( WP_DEBUG === true ) {
+			$cache_bust = date( 'YmdHis' );
+		}
+		else {
+			$theme = wp_get_theme( 'UCF-WordPress-Theme' );
+			$cache_bust = ( $theme instanceof WP_Theme ) ? $theme->get( 'Version' ) : date( 'YmdH' );
+		}
+
+		// Enqueue global editor styles.
+		// This stylesheet is enqueued on all admin screens, instead of
+		// just the post add/edit screens, to account for custom
+		// screens/options pages that utilize WYSIWYG editors.
+		add_editor_style( UCFWP_THEME_CSS_URL . '/editor.min.css?v=' . $cache_bust );
+
+		// Enqueue opinionated editor stylesheet
+		if ( get_theme_mod( 'enable_opinionated_post_styles' ) ) {
+			add_editor_style( UCFWP_THEME_CSS_URL . '/editor-opinionated.min.css?v=' . $cache_bust );
+		}
+
+	}
+}
+
+add_action( 'init', 'ucfwp_enqueue_admin_assets', 99 ); // Enqueue late to ensure styles are enqueued after Athena SC Plugin's styles
+
+
+/**
  * Meta tags to insert into the document head.
  **/
 function ucfwp_add_meta_tags() {
@@ -87,7 +127,7 @@ add_filter( 'emoji_svg_url', '__return_false' );
  **/
 function ucfwp_add_id_to_ucfhb( $url ) {
 	if (
-		( false !== strpos($url, 'bar/js/university-header.js' ) )
+		( false !== strpos( $url, 'bar/js/university-header.js' ) )
 		|| ( false !== strpos( $url, 'bar/js/university-header-full.js' ) )
 	) {
       remove_filter( 'clean_url', 'ucfwp_add_id_to_ucfhb', 10, 3 );

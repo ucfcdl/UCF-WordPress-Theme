@@ -91,6 +91,13 @@ function ucfwp_define_customizer_sections( $wp_customize ) {
 	);
 
 	$wp_customize->add_section(
+		UCFWP_THEME_CUSTOMIZER_PREFIX . 'site_styles',
+		array(
+			'title' => 'Site Styles'
+		)
+	);
+
+	$wp_customize->add_section(
 		UCFWP_THEME_CUSTOMIZER_PREFIX . 'webfonts',
 		array(
 			'title' => 'Web Fonts'
@@ -127,6 +134,24 @@ function ucfwp_define_customizer_fields( $wp_customize ) {
 			'label'       => 'ucf.edu Primary Navigation JSON',
 			'description' => 'URL that points to a JSON feed of ucf.edu\'s primary navigation data.',
 			'section'     => UCFWP_THEME_CUSTOMIZER_PREFIX . 'nav_settings'
+		)
+	);
+
+	// Site Styles
+	$wp_customize->add_setting(
+		'enable_opinionated_post_styles',
+		array(
+			'default' => false
+		)
+	);
+
+	$wp_customize->add_control(
+		'enable_opinionated_post_styles',
+		array(
+			'type'        => 'checkbox',
+			'label'       => 'Enable Opinionated Post Styles',
+			'description' => 'When enabled, default post content styles will be modified to include more user-friendly defaults. Styles applied are ideal for sites whose content is maintained by users without HTML/CSS knowledge.',
+			'section'     => UCFWP_THEME_CUSTOMIZER_PREFIX . 'site_styles'
 		)
 	);
 
@@ -492,3 +517,20 @@ function ucfwp_excerpt_more( $more ) {
 }
 
 add_filter( 'excerpt_more', 'ucfwp_excerpt_more' );
+
+
+/**
+ * Filters classes applied to the document body.
+ *
+ * @since 0.6.0
+ * @author Jo Dickson
+ */
+function ucfwp_body_class( $classes ) {
+	if ( get_theme_mod( 'enable_opinionated_post_styles' ) ) {
+		$classes[] = 'ucfwp-styles-opinionated';
+	}
+
+	return $classes;
+}
+
+add_filter( 'body_class', 'ucfwp_body_class' );

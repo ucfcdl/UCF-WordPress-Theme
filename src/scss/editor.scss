@@ -23,3 +23,14 @@
 
 @import 'utils';
 @import 'typography';
+
+
+.mce-content-body {
+  &.page-template-default {
+    max-width: 1110px;
+  }
+
+  &.page-template-template-narrow {
+    max-width: 730px;
+  }
+}

@@ -3,16 +3,19 @@
 // improved out-of-the-box headings, image alignment, etc.
 //
 
-// Utility mixin that sets base margin-top and margin-bottom overrides
-@mixin styles-opinionated-my() {
-  margin-bottom: 1.5rem;
-  margin-top: 0;
+// Utility mixins that set base margin-top and margin-bottom overrides
+// TODO selector inherits `.ucfwp-styles-opinionated .wysiwyg-content`/parent selector incorrectly!
+@mixin styles-opinionated-my-base($selector) {
+  #{$selector} {
+    margin-bottom: 1.5rem;
+    margin-top: 0;
 
-  @include media-breakpoint-up(md) {
-    margin-bottom: 2rem;
+    @include media-breakpoint-up(md) {
+      margin-bottom: 2rem;
+    }
   }
 
-  * + & {
+  * + #{$selector} {
     margin-top: 1.5rem;
 
     @include media-breakpoint-up(md) {
@@ -21,32 +24,134 @@
   }
 }
 
-// All overrides to apply when the opinionated stylesheet is enabled
-@mixin styles-opinionated() {
-  // Text, headings
-  * + h1,
-  * + h2,
-  * + h3,
-  * + h4,
-  * + h5,
-  * + h6,
-  * + .h1,
-  * + .h2,
-  * + .h3,
-  * + .h4,
-  * + .h5,
-  * + .h6 {
-    margin-top: 1em;
+@mixin styles-opinionated-my-larger($selector) {
+  #{$selector} {
+    margin-bottom: 2.25rem;
+    margin-top: 0;
+
+    @include media-breakpoint-up(md) {
+      margin-bottom: 4rem;
+    }
   }
 
-  // Images, figures
-  // sass-lint:disable no-qualifying-elements
-  .figure,
-  img[class*='wp-image-']:not(.figure-img) {
-    @include styles-opinionated-my();
+  * + #{$selector} {
+    margin-top: 2.25rem;
 
-    &.float-left,
-    &.float-right {
+    @include media-breakpoint-up(md) {
+      margin-top: 4rem;
+    }
+  }
+}
+
+
+// All overrides to apply when the opinionated stylesheet is enabled
+
+@mixin styles-opinionated() {
+  //
+  // Text, headings
+  //
+  $headings-selector: 'h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6';
+
+  #{$headings-selector} {
+    margin-bottom: 1.5rem;
+
+    + .lead {
+      margin-top: -.5rem;
+    }
+  }
+
+  * + #{$headings-selector} {
+    margin-top: 2.25rem;
+
+    @include media-breakpoint-up(md) {
+      margin-top: 4rem;
+    }
+  }
+
+  .heading-underline,
+  .heading-underline-inverse {
+    margin-bottom: 1.625rem;
+
+    @include media-breakpoint-up(md) {
+      margin-bottom: 2rem;
+    }
+  }
+
+  .lead {
+    margin-bottom: 1.5rem;
+  }
+
+
+  //
+  // Blockquotes
+  //
+  .blockquote {
+    @include media-breakpoint-up(md) {
+      padding-bottom: 2.25rem;
+      padding-top: 2.25rem;
+    }
+  }
+
+
+  //
+  // Lists
+  // TODO needs more testing with Athena classes
+  //
+
+  // dl,
+  // ol,
+  // ul {
+  //   &:not(.wp-caption) {
+  //     @include styles-opinionated-my-base();
+
+  //     * + & {
+  //       margin-top: .5rem;
+  //     }
+  //   }
+
+  //   &:not(.nav):not(.row):not(.wp-caption) {
+  //     display: inline-block;
+
+  //     dl,
+  //     ol,
+  //     ul {
+  //       display: block;
+  //       margin-bottom: .5rem;
+  //       margin-top: .5rem;
+  //     }
+  //   }
+  // }
+
+
+  //
+  // Dividers
+  //
+  hr {
+    margin-bottom: 2.5rem;
+    margin-top: 2.5rem;
+
+    @include media-breakpoint-up(md) {
+      margin-bottom: 4rem;
+      margin-top: 4rem;
+    }
+  }
+
+
+  //
+  // Images, figures
+  //
+  // sass-lint:disable no-qualifying-elements
+  $figures-selector: ".figure, img[class*='wp-image-']:not(.figure-img), .mceTemp .wp-caption"; // sass-lint:disable-line quotes
+  $figures-floats-selector-left: '&.float-left, &.alignleft';
+  $figures-floats-selector-right: '&.float-right, &.alignright';
+  $figures-floats-selector: $figures-floats-selector-left + ',' + $figures-floats-selector-right;
+
+  @include styles-opinionated-my-larger($figures-selector);
+
+  // Rules for all figures
+  #{$figures-selector} {
+    // All float combination rules
+    #{$figures-floats-selector} {
       @include media-breakpoint-only(xs) {
         display: block;
         float: none !important; // sass-lint:disable-line no-important
@@ -61,40 +166,44 @@
       @include media-breakpoint-between(sm, md) {
         max-width: 40% !important; // sass-lint:disable-line no-important
       }
+    }
 
-      * + & {
+    // Left float combination rules
+    #{$figures-floats-selector-left} {
+      @include media-breakpoint-up(sm) {
+        margin-right: $grid-gutter-width-base * 1.25;
+      }
+
+      @include media-breakpoint-up(md) {
+        margin-right: $grid-gutter-width-base * 2;
+      }
+    }
+
+    // Right float combination rules
+    #{$figures-floats-selector-right} {
+      @include media-breakpoint-up(sm) {
+        margin-left: $grid-gutter-width-base * 1.25;
+      }
+
+      @include media-breakpoint-up(md) {
+        margin-left: $grid-gutter-width-base * 2;
+      }
+    }
+  }
+
+  * + #{$figures-selector} {
+    #{$figures-floats-selector} {
+      @include media-breakpoint-up(sm) {
+        // margin-bottom: 1.25rem;
+        margin-top: .75rem;
+      }
+    }
+  }
+
+  br + #{$figures-selector} {
+    #{$figures-floats-selector} {
+      @include media-breakpoint-up(sm) {
         margin-top: 1.5rem;
-
-        @include media-breakpoint-up(sm) {
-          margin-bottom: 1.25rem;
-          margin-top: .75rem;
-        }
-      }
-
-      br + & {
-        @include media-breakpoint-up(sm) {
-          margin-top: 1.5rem;
-        }
-      }
-    }
-
-    &.float-left {
-      @include media-breakpoint-up(sm) {
-        margin-right: $grid-gutter-width-base;
-      }
-
-      @include media-breakpoint-up(md) {
-        margin-right: $grid-gutter-width-base * 1.5;
-      }
-    }
-
-    &.float-right {
-      @include media-breakpoint-up(sm) {
-        margin-left: $grid-gutter-width-base;
-      }
-
-      @include media-breakpoint-up(md) {
-        margin-left: $grid-gutter-width-base * 1.5;
       }
     }
   }
@@ -109,61 +218,54 @@
     margin-top: .25rem;
   }
 
-  .wp-caption-dd {
-    color: $figure-caption-color;
-    font-size: $figure-caption-font-size;
-  }
 
-
+  //
   // Editor-generated figures with captions
-  .wp-caption {
-    @include styles-opinionated-my();
+  //
+  // sass-lint:disable-block class-name-format
+  @include styles-opinionated-my-larger('.mceTemp .wp-caption');
+
+  .mceTemp .wp-caption {
     display: flex;
     flex-direction: column;
 
-    &.alignleft {
-      @include media-breakpoint-down(xs) {
-        float: none;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      @include media-breakpoint-up(sm) {
-        margin-right: $grid-gutter-width-base;
-      }
-
-      @include media-breakpoint-up(md) {
-        margin-right: $grid-gutter-width-base * 1.5;
-      }
-    }
-
-    &.alignright {
-      @include media-breakpoint-down(xs) {
-        float: none;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      @include media-breakpoint-up(sm) {
-        margin-left: $grid-gutter-width-base;
-      }
-
-      @include media-breakpoint-up(md) {
-        margin-left: $grid-gutter-width-base * 1.5;
-      }
-    }
-
     img[class*='wp-image-']:not(.figure-img) {
+      margin-top: 0;
       max-width: 100% !important; // sass-lint:disable-line no-important
       width: 100%;
     }
   }
   // sass-lint:enable no-qualifying-elements
 
-
-  // Embeds
-  .embed {
-    @include styles-opinionated-my();
+  .wp-caption-dt {
+    font-weight: normal;
+    line-height: 1;
   }
 
+  .wp-caption-dd {
+    color: $figure-caption-color;
+    font-size: $figure-caption-font-size;
+  }
+
+
+  //
+  // Embeds
+  //
+  @include styles-opinionated-my-larger('.embed');
+
+
+  //
+  // Tables
+  //
+  @include styles-opinionated-my-larger('.table');
+
+
+  //
+  // Jumbotrons
+  //
+  @include styles-opinionated-my-larger('.jumbotron');
+
+  > .jumbotron:last-child {
+    margin-bottom: 0;
+  }
 }

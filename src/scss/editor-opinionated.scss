@@ -18,4 +18,8 @@
 //
 @import 'mixins';
 
-@include styles-opinionated();
+// sass-lint:disable-block no-ids
+#tinymce {
+  @include styles-opinionated();
+}
+

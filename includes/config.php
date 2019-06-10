@@ -534,3 +534,20 @@ function ucfwp_body_class( $classes ) {
 }
 
 add_filter( 'body_class', 'ucfwp_body_class' );
+
+
+/**
+ * Applies a wrapper element to post content and meta fields
+ * that use a TinyMCE editor to help distinguish them from
+ * non-WYSIWYG contents.
+ *
+ * @since 0.6.0
+ * @author Jo Dickson
+ * @param string $content Passed-in filtered content
+ * @return string Modified content
+ */
+function ucfwp_the_content_wrapper( $content ) {
+	return '<div class="wysiwyg-content">' . $content . '</div>';
+}
+
+add_filter( 'the_content', 'ucfwp_the_content_wrapper', 99 );

@@ -3,14 +3,15 @@
 // belong in header/footer or template-specific Sass files
 //
 
+
 // Inner page/post content - general
-.post-list-item {
+.wysiwyg-content {
   @include clearfix();
 }
 
 // Opinionated style overrides - general
 .ucfwp-styles-opinionated {
-  .post-list-item {
+  .wysiwyg-content {
     @include styles-opinionated();
   }
 }

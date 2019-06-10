@@ -146,9 +146,9 @@
   $figures-floats-selector-right: '&.float-right, &.alignright';
   $figures-floats-selector: $figures-floats-selector-left + ',' + $figures-floats-selector-right;
 
+  // Rules for all figures
   @include styles-opinionated-my-larger($figures-selector);
 
-  // Rules for all figures
   #{$figures-selector} {
     // All float combination rules
     #{$figures-floats-selector} {
@@ -223,9 +223,11 @@
   // Editor-generated figures with captions
   //
   // sass-lint:disable-block class-name-format
-  @include styles-opinionated-my-larger('.mceTemp .wp-caption');
+  $editor-figures-selector: '.mceTemp .wp-caption';
 
-  .mceTemp .wp-caption {
+  @include styles-opinionated-my-larger($editor-figures-selector);
+
+  #{$editor-figures-selector} {
     display: flex;
     flex-direction: column;
 

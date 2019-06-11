@@ -3,8 +3,9 @@
 // improved out-of-the-box headings, image alignment, etc.
 //
 
-// Utility mixins that set base margin-top and margin-bottom overrides
-// TODO selector inherits `.ucfwp-styles-opinionated .wysiwyg-content`/parent selector incorrectly!
+// Utility mixins that set base margin-top and margin-bottom overrides.
+// Selectors have to be passed in as a string to these mixins
+// to work around how Sass generates final selectors based on nesting.
 @mixin styles-opinionated-my-base($selector) {
   #{$selector} {
     margin-bottom: 1.5rem;
@@ -15,13 +16,27 @@
     }
   }
 
-  * + #{$selector} {
+  * + #{$selector},
+  * + * > #{$selector} {
     margin-top: 1.5rem;
 
     @include media-breakpoint-up(md) {
       margin-top: 2rem;
     }
   }
+
+  // TODO needs more testing
+  // * > #{$selector}:only-child {
+  //   margin-bottom: 0;
+  //   margin-top: 0;
+  // }
+
+  // // TODO needs more testing
+  // * > *:first-child:empty + #{$selector} {
+  //   @include media-breakpoint-up(lg) {
+  //     margin-top: 0;
+  //   }
+  // }
 }
 
 @mixin styles-opinionated-my-larger($selector) {
@@ -34,13 +49,26 @@
     }
   }
 
-  * + #{$selector} {
+  * + #{$selector},
+  * + * > #{$selector} {
     margin-top: 2.25rem;
 
     @include media-breakpoint-up(md) {
       margin-top: 4rem;
     }
   }
+
+  // TODO needs more testing
+  // * > #{$selector}:only-child {
+  //   margin-bottom: 0;
+  // }
+
+  // // TODO needs more testing
+  // * > *:first-child:empty + #{$selector} {
+  //   @include media-breakpoint-up(lg) {
+  //     margin-top: 0;
+  //   }
+  // }
 }
 
 
@@ -50,21 +78,28 @@
   //
   // Text, headings
   //
-  $headings-selector: 'h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6';
+  $headings-selector: 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', '.h1', '.h2', '.h3', '.h4', '.h5', '.h6';
 
-  #{$headings-selector} {
-    margin-bottom: 1.5rem;
+  // TODO verify this loop works
+  @each $heading-selector in $headings-selector {
+    #{$heading-selector} {
+      margin-bottom: 1.5rem;
 
-    + .lead {
-      margin-top: -.5rem;
+      + .lead {
+        margin-top: -.5rem;
+      }
     }
-  }
 
-  * + #{$headings-selector} {
-    margin-top: 2.25rem;
+    * + #{$heading-selector} {
+      margin-top: 2.25rem;
 
-    @include media-breakpoint-up(md) {
-      margin-top: 4rem;
+      @include media-breakpoint-up(md) {
+        margin-top: 4rem;
+      }
+    }
+
+    * > #{$heading-selector}:only-child {
+      margin-bottom: 0;
     }
   }
 
@@ -141,69 +176,79 @@
   // Images, figures
   //
   // sass-lint:disable no-qualifying-elements
-  $figures-selector: ".figure, img[class*='wp-image-']:not(.figure-img), .mceTemp .wp-caption"; // sass-lint:disable-line quotes
-  $figures-floats-selector-left: '&.float-left, &.alignleft';
-  $figures-floats-selector-right: '&.float-right, &.alignright';
-  $figures-floats-selector: $figures-floats-selector-left + ',' + $figures-floats-selector-right;
+  $figures-selector: '.figure', 'img[class*="wp-image-"]:not(.figure-img)', '.mceTemp .wp-caption'; // sass-lint:disable-line quotes
 
   // Rules for all figures
-  @include styles-opinionated-my-larger($figures-selector);
+  @each $figure-selector in $figures-selector {
+    @include styles-opinionated-my-larger($figure-selector);
 
-  #{$figures-selector} {
-    // All float combination rules
-    #{$figures-floats-selector} {
-      @include media-breakpoint-only(xs) {
-        display: block;
-        float: none !important; // sass-lint:disable-line no-important
-        margin-left: auto;
-        margin-right: auto;
+    #{$figure-selector} {
+      // All float combination rules
+      &.float-left,
+      &.alignleft,
+      &.float-right,
+      &.alignright {
+        @include media-breakpoint-only(xs) {
+          display: block;
+          float: none !important; // sass-lint:disable-line no-important
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        @include media-breakpoint-up(sm) {
+          margin-top: .5rem;
+        }
+
+        @include media-breakpoint-between(sm, md) {
+          max-width: 40% !important; // sass-lint:disable-line no-important
+        }
       }
 
-      @include media-breakpoint-up(sm) {
-        margin-top: .5rem;
+      // Left float combination rules
+      &.float-left,
+      &.alignleft {
+        @include media-breakpoint-up(sm) {
+          margin-right: $grid-gutter-width-base * 1.25;
+        }
+
+        @include media-breakpoint-up(md) {
+          margin-right: $grid-gutter-width-base * 2;
+        }
       }
 
-      @include media-breakpoint-between(sm, md) {
-        max-width: 40% !important; // sass-lint:disable-line no-important
+      // Right float combination rules
+      &.float-right,
+      &.alignright {
+        @include media-breakpoint-up(sm) {
+          margin-left: $grid-gutter-width-base * 1.25;
+        }
+
+        @include media-breakpoint-up(md) {
+          margin-left: $grid-gutter-width-base * 2;
+        }
+      }
+    }
+
+    * + #{$figure-selector} {
+      &.float-left,
+      &.alignleft,
+      &.float-right,
+      &.alignright {
+        @include media-breakpoint-up(sm) {
+          // margin-bottom: 1.25rem;
+          margin-top: .75rem;
+        }
       }
     }
 
-    // Left float combination rules
-    #{$figures-floats-selector-left} {
-      @include media-breakpoint-up(sm) {
-        margin-right: $grid-gutter-width-base * 1.25;
-      }
-
-      @include media-breakpoint-up(md) {
-        margin-right: $grid-gutter-width-base * 2;
-      }
-    }
-
-    // Right float combination rules
-    #{$figures-floats-selector-right} {
-      @include media-breakpoint-up(sm) {
-        margin-left: $grid-gutter-width-base * 1.25;
-      }
-
-      @include media-breakpoint-up(md) {
-        margin-left: $grid-gutter-width-base * 2;
-      }
-    }
-  }
-
-  * + #{$figures-selector} {
-    #{$figures-floats-selector} {
-      @include media-breakpoint-up(sm) {
-        // margin-bottom: 1.25rem;
-        margin-top: .75rem;
-      }
-    }
-  }
-
-  br + #{$figures-selector} {
-    #{$figures-floats-selector} {
-      @include media-breakpoint-up(sm) {
-        margin-top: 1.5rem;
+    br + #{$figure-selector} {
+      &.float-left,
+      &.alignleft,
+      &.float-right,
+      &.alignright {
+        @include media-breakpoint-up(sm) {
+          margin-top: 1.5rem;
+        }
       }
     }
   }
@@ -222,12 +267,10 @@
   //
   // Editor-generated figures with captions
   //
+  @include styles-opinionated-my-larger('.mceTemp .wp-caption');
+
   // sass-lint:disable-block class-name-format
-  $editor-figures-selector: '.mceTemp .wp-caption';
-
-  @include styles-opinionated-my-larger($editor-figures-selector);
-
-  #{$editor-figures-selector} {
+  .mceTemp .wp-caption {
     display: flex;
     flex-direction: column;
 

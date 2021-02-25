@@ -8,6 +8,7 @@ define( 'UCFWP_THEME_STATIC_URL', UCFWP_THEME_URL . '/static' );
 define( 'UCFWP_THEME_CSS_URL', UCFWP_THEME_STATIC_URL . '/css' );
 define( 'UCFWP_THEME_JS_URL', UCFWP_THEME_STATIC_URL . '/js' );
 define( 'UCFWP_THEME_IMG_URL', UCFWP_THEME_STATIC_URL . '/img' );
+define( 'UCFWP_THEME_FONT_URL', UCFWP_THEME_STATIC_URL . '/fonts' );
 define( 'UCFWP_THEME_TEMPLATE_PARTS_PATH', 'template-parts' );
 define( 'UCFWP_THEME_CUSTOMIZER_PREFIX', 'ucfwp_' );
 define( 'UCFWP_MAINSITE_NAV_URL', 'https://www.ucf.edu/wp-json/ucf-rest-menus/v1/menus/23' );
@@ -91,6 +92,13 @@ function ucfwp_define_customizer_sections( $wp_customize ) {
 	);
 
 	$wp_customize->add_section(
+		UCFWP_THEME_CUSTOMIZER_PREFIX . 'icons',
+		array(
+			'title' => 'Icons'
+		)
+	);
+
+	$wp_customize->add_section(
 		UCFWP_THEME_CUSTOMIZER_PREFIX . 'webfonts',
 		array(
 			'title' => 'Web Fonts'
@@ -101,6 +109,13 @@ function ucfwp_define_customizer_sections( $wp_customize ) {
 		UCFWP_THEME_CUSTOMIZER_PREFIX . 'analytics',
 		array(
 			'title' => 'Analytics'
+		)
+	);
+
+	$wp_customize->add_section(
+		UCFWP_THEME_CUSTOMIZER_PREFIX . 'performance',
+		array(
+			'title' => 'Performance'
 		)
 	);
 }
@@ -127,6 +142,34 @@ function ucfwp_define_customizer_fields( $wp_customize ) {
 			'label'       => 'ucf.edu Primary Navigation JSON',
 			'description' => 'URL that points to a JSON feed of ucf.edu\'s primary navigation data.',
 			'section'     => UCFWP_THEME_CUSTOMIZER_PREFIX . 'nav_settings'
+		)
+	);
+
+	// Icons
+	$wp_customize->add_setting(
+		'font_awesome_version',
+		array(
+			'default' => '4'
+		)
+	);
+
+	$wp_customize->add_control(
+		'font_awesome_version',
+		array(
+			'type'        => 'select',
+			'label'       => 'Font Awesome Version',
+			'description' => 'What version of <a href="https://fontawesome.com/">Font Awesome</a> to load throughout the site.
+								By default, this theme includes Font Awesome version 4.<br><br>
+								If you wish to load Font Awesome yourself using other means (e.g. CDN), or want to load it
+								via a third-party plugin, you should set this to "None".<br><br>
+								Once set, you should avoid changing this value to avoid breaking pages that use a different
+								version of Font Awesome icons.  This theme does not include v4 upgrade shims when v5 is in use.',
+			'section'     => UCFWP_THEME_CUSTOMIZER_PREFIX . 'icons',
+			'choices'     => array(
+				'4' => 'Version 4 (4.7.0)',
+				'5' => 'Version 5',
+				'none' => 'None (do not load Font Awesome)'
+			)
 		)
 	);
 
@@ -216,6 +259,21 @@ function ucfwp_define_customizer_fields( $wp_customize ) {
 			'label'       => 'Chartbeat Domain',
 			'description' => 'Example: <em>some.domain.com</em>',
 			'section'     => UCFWP_THEME_CUSTOMIZER_PREFIX . 'analytics'
+		)
+	);
+
+	// Performance Settings
+	$wp_customize->add_setting(
+		'dns_prefetch_domains',
+	);
+
+	$wp_customize->add_control(
+		'dns_prefetch_domains',
+		array(
+			'type'        => 'textarea',
+			'label'       => 'Additional Required Origins for DNS Prefetching',
+			'description' => 'Specify a comma-separated list of domains to third-party origins that should be prefetched using <code>&lt;link rel="dns-prefetch"&gt;</code> that WordPress doesn\'t already handle out-of-the-box.',
+			'section'     => UCFWP_THEME_CUSTOMIZER_PREFIX . 'performance'
 		)
 	);
 }
